@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Angular",
+    "author": "Google Inc.",
+    "logoPath": "images/frameworks/angular.png",
+    "doSucks": true,
+    "isVisible": true
+  },
+  {
+    "name": "React",
+    "author": "Jordan Walke",
+    "logoPath": "images/frameworks/react.png",
+    "doSucks": true,
+    "isVisible": true
+  },
+  {
+    "name": "Vue",
+    "author": "Evan You",
+    "logoPath": "images/frameworks/vue.png",
+    "doSucks": true,
+    "isVisible": true
+  },
+  {
+    "name": "Ember",
+    "author": "Yehuda Katz",
+    "logoPath": "images/frameworks/ember.png",
+    "doSucks": true,
+    "isVisible": true
+  },
+  {
+    "name": "Blazor",
+    "author": "Steve sanderson",
+    "logoPath": "images/frameworks/blazor.png",
+    "doSucks": false,
+    "isVisible": true
+  }
+]

@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <!-- Topbar Start -->
+    <TopBarMenu />
+    <!-- end Topbar -->
+    <!-- ========== Left Sidebar Start ========== -->
+    <NavMenu />
+    <!-- Left Sidebar End -->
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class=" px-4">
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        @Body
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+                <Footer />
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+        </article>
+    </main>
+</div>

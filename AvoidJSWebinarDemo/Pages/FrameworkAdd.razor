@@ -1,0 +1,182 @@
+﻿@page "/framework/add"
+@using Microsoft.AspNetCore.Components
+
+@inject NavigationManager NavManager
+
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">
+                        <a href="javascript: void(0);">Webinar Demo</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript: void(0);">Avoid JS</a>
+                    </li>
+                    <li class="breadcrumb-item active">New Framework</li>
+                </ol>
+            </div>
+            <h4 class="page-title">New Framework</h4>
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+<EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="NewFramework" Context="CurrentEditContext">
+    <DataAnnotationsValidator/>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="mb-3">
+                                <label class="form-label">Framework Name</label>
+                                <InputText class="form-control" placeholder="Enter framework name" @bind-Value="NewFramework.Name" DisplayName="Framework Name"></InputText>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Authors Name</label>
+                                <InputText class="form-control" placeholder="Enter authors name" @bind-Value="NewFramework.Author" DisplayName="Authors Name"></InputText>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <label class="form-check-label">Do Sucks</label>
+                                <InputCheckbox class="form-check-input" @bind-Value="NewFramework.DoSucks"></InputCheckbox>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" @onclick="AddNewFeature" class="btn btn-light waves-effect waves-light m-1"><i class="fe-plus me-1"></i>New feature</button>
+
+                            </div>
+
+                            @foreach (var feature in NewFramework.Features)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <InputText class="form-control" @bind-Value="@feature.Name"></InputText>
+                                    <label class="form-label">Category</label>
+                                    <InputText class="form-control" @bind-Value="@feature.Category"></InputText>
+                                </div>
+                            }
+                            <hr/>
+
+
+                        </div> <!-- end col-->
+
+                        <div class="col-xl-6">
+                            <div class="my-3 mt-xl-0">
+                                <label for="poster" class="mb-0 form-label">Logo</label>
+                                <p class="text-muted font-14">Recommended thumbnail size 150x200 (px).</p>
+
+                                <form class="dropzone">
+                                    <div class="fallback">
+                                        <InputFile OnChange="OnFileInput"></InputFile>
+                                    </div>
+
+                                    <div class="dz-message needsclick">
+                                        @if (string.IsNullOrEmpty(imgUrl))
+                                        {
+                                            <i class="h3 text-muted dripicons-cloud-upload"></i>
+                                            <h4>Drop files here or click to upload.</h4>
+                                        }
+                                        else
+                                        {
+                                            <img src="@imgUrl" width="150" height="200"/>
+                                        }
+                                    </div>
+                                </form>
+                                <!-- Preview -->
+                                <div class="dropzone-previews mt-3" id="file-previews"></div>
+
+                                <!-- file preview template -->
+                                <div class="d-none" id="uploadPreviewTemplate">
+                                    <div class="card mt-1 mb-0 shadow-none border">
+                                        <div class="p-2">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
+                                                </div>
+                                                <div class="col ps-0">
+                                                    <a href="javascript:void(0);" class="text-muted fw-bold" data-dz-name></a>
+                                                    <p class="mb-0" data-dz-size></p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <!-- Button -->
+                                                    <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                                        <i class="mdi mdi-close"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end file preview template -->
+                            </div>
+                        </div> <!-- end col-->
+                    </div>
+                    <!-- end row -->
+
+
+                    <div class="row mt-3">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-success waves-effect waves-light m-1"><i class="fe-check-circle me-1"></i> Create</button>
+                            <button type="button" @onclick="Cancel" class="btn btn-light waves-effect waves-light m-1"><i class="fe-x me-1"></i> Cancel</button>
+                        </div>
+                    </div>
+
+                </div> <!-- end card-body -->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+    </div>
+    <!-- end row-->
+</EditForm>
+
+@code {
+    public AvoidJS.Framework NewFramework { get; set; } = new AvoidJS.Framework();
+    string imgUrl = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewFramework.Features = new List<AvoidJS.Feature>();
+    }
+
+    private void AddNewFeature()
+    {
+        NewFramework.Features.Add(new AvoidJS.Feature());
+        StateHasChanged();
+    }
+
+    protected async Task OnSubmit(EditContext editContext)
+    {
+        try
+        {
+            foreach (var feature in NewFramework.Features)
+            {
+                Console.WriteLine($"New Feature name : {feature.Name}, in category : {feature.Category}");
+            }
+    // NavManager.NavigateTo("/avoidjs", true);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    protected void Cancel()
+    {
+        NavManager.NavigateTo("/avoidjs", true);
+    }
+
+    private async Task OnFileInput(InputFileChangeEventArgs e)
+    {
+        IBrowserFile imgFile = e.File;
+        var buffers = new byte[imgFile.Size];
+        await imgFile.OpenReadStream(5120000).ReadAsync(buffers);
+        string imageType = imgFile.ContentType;
+        imgUrl = $"data:{imageType};base64,{Convert.ToBase64String(buffers)}";
+    }
+
+
+
+}

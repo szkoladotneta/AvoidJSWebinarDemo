@@ -1,0 +1,108 @@
+﻿@page "/avoidjs"
+@inject HttpClient Http
+@using AvoidJSWebinarDemo.Components.Frameworks
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box">
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">
+                        <a href="javascript: void(0);">Webinar Demo</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="javascript: void(0);">AvoidJS</a>
+                    </li>
+                    <li class="breadcrumb-item active">List</li>
+                </ol>
+            </div>
+            <h4 class="page-title">Frameworks List</h4>
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<div class="row mb-2">
+    <div class="col-sm-4">
+        <a href="/framework/add" class="btn btn-danger rounded-pill waves-effect waves-light mb-3"><i class="mdi mdi-plus"></i> Add Framework</a>
+    </div>
+    <div class="col-sm-8">
+        <div class="text-sm-end">
+            <div class="btn-group mb-3">
+                <div class="search-bar form-inline">
+                    <div class="position-relative">
+                        <input type="text" class="form-control" value="@_searchString" @oninput="SearchStringChanged" placeholder="Search...">
+                        <span class="mdi mdi-magnify"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group mb-3">
+                <button type="button" class='btn @(_activeFilter == "all" ? "btn-primary" : "btn-light")' @onclick='() => StageFilter("all")'>All</button>
+            </div>
+            <div class="btn-group mb-3 ms-1">
+                <button type="button" class="btn @(_activeFilter == "won" ? "btn-primary" : "btn-light")" @onclick='() => StageFilter("great")'>Great Only</button>
+            </div>
+        </div>
+    </div><!-- end col-->
+</div>
+<!-- end row-->
+@if (_frameworks == null || !_frameworks.Any())
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="row">
+        @foreach (var framework in _frameworks.Where(p => p.IsVisible.Value))
+        {
+            <FrameworkListTile Name="@framework.Name" AuthorName="@framework.Author" DoSucks="@framework.DoSucks" IsVisible="@framework.IsVisible" LogoPath="@framework.LogoPath"></FrameworkListTile>
+        }
+    </div>
+}
+
+@code {
+    private List<Framework>? _frameworks = new();
+    private string _activeFilter = "all";
+    private string? _searchString = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _frameworks = await Http.GetFromJsonAsync<List<Framework>>("sample-data/frameworks.json");
+    }
+
+    private void StageFilter(string filter)
+    {
+        _activeFilter = filter;
+        _frameworks?.ForEach(x => x.IsVisible = _activeFilter == "all" || (bool) !x.DoSucks);
+        StateHasChanged();
+    }
+
+    private void SearchStringChanged(ChangeEventArgs e)
+    {
+        _searchString = e?.Value?.ToString();
+        StageFilter(_activeFilter);
+        _frameworks?.ForEach(x => x.IsVisible = x.Name?.Contains(_searchString));
+        StateHasChanged();
+    }
+
+    public class Framework
+    {
+        public string? Name { get; set; }
+        public string? Author { get; set; }
+        public string? LogoPath { get; set; }
+        public bool DoSucks { get; set; }
+        public bool? IsVisible { get; set; }
+        public List<Feature> Features { get; set; }
+    }
+
+    public class Feature
+    {
+        public string Name { get; set; }
+        public string Category { get; set; }
+    }
+
+}

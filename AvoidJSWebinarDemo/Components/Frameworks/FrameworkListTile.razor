@@ -1,0 +1,80 @@
+﻿@inject HttpClient Http
+
+<div class="col-lg-4" style="display:@IsDisplayed">
+    <div class="card project-box">
+        <div class="card-body">
+            <div class="dropdown float-end">
+                <a href="#" class="dropdown-toggle card-drop arrow-none" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="mdi mdi-dots-horizontal m-0 text-muted h3"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#delete-modal-@Name">Delete</a>
+
+                </div>
+            </div> <!-- end dropdown -->
+            <!-- Title-->
+            <h4 class="mt-0"><a href="#" class="text-dark">@Name</a></h4>
+            <p class="text-muted text-uppercase"><i class="mdi mdi-account-circle"></i> <small>@AuthorName</small></p>
+            <div class="badge @Color mb-3">@(DoSucks ? "Sucks" : "Great")</div>
+            <!-- Desc-->
+            <p class="mb-3 sp-line-2 align-content-center">
+                <img height="100px" src="@LogoPath" alt="@Name logo"/>
+            </p>
+        </div>
+    </div> <!-- end card box-->
+</div><!-- end col-->
+
+    <!-- Top modal content -->
+    <div id="delete-modal-@Name" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-top">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="topModalLabel">Delete framework?</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>Are you sure?</h5>
+                    <p>You are going to delete @Name permanently.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="DeleteFramework">Delete</button>
+                </div>
+            </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+    <!-- /.modal -->
+@code {
+    [Parameter]
+    public string? Name { get; set; } = "";
+    [Parameter]
+    public string? AuthorName { get; set; } = "";
+    [Parameter]
+    public bool DoSucks { get; set; } = true;
+    [Parameter]
+    public bool? IsVisible { get; set; } = true;
+
+    [Parameter]
+    public string? LogoPath { get; set; } = "";
+
+    private string Color = string.Empty;
+
+    private string IsDisplayed { get; set; } = "inline";
+
+    private void DeleteFramework()
+    {
+        IsDisplayed = "none";
+    }
+
+    protected override void OnInitialized()
+    {
+        Color = DoSucks switch
+        {
+            true => "bg-soft-warning text-warning",
+            false => "bg-soft-success text-success"
+            
+            };
+    }
+
+}
